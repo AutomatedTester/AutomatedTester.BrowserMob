@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomatedTester.BrowserMob", "AutomatedTester.BrowserMob\AutomatedTester.BrowserMob.csproj", "{A8C349FD-5720-40C2-9A63-F4A57F0FA5DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8C349FD-5720-40C2-9A63-F4A57F0FA5DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8C349FD-5720-40C2-9A63-F4A57F0FA5DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8C349FD-5720-40C2-9A63-F4A57F0FA5DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8C349FD-5720-40C2-9A63-F4A57F0FA5DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
