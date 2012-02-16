@@ -9,28 +9,19 @@ namespace AutomatedTester.BrowserMob
 {
     public class Server
     {
-        private Process server;
-        private int port;
-        private String path = string.Empty;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="path"></param>
-        public Server(String path):
-            this(path, 8080)
-        {
-        }
-
+        private Process _server;
+        private readonly int _port;
+        private readonly String _path = string.Empty;
+      
         /// <summary>
         /// 
         /// </summary>
         /// <param name="path"></param>
         /// <param name="port"></param>
-        public Server(String path, int port)
+        public Server(String path, int port = 8080)
         {
-            this.path = path;
-            this.port = port;
+            _path = path;
+            _port = port;
         }
 
         /// <summary>
@@ -39,15 +30,15 @@ namespace AutomatedTester.BrowserMob
         public void Start()
         {
             Process builder = new Process();
-            builder.StartInfo.FileName = path;
-            if (port != 0)
+            builder.StartInfo.FileName = _path;
+            if (_port != 0)
             {
-                builder.StartInfo.Arguments = String.Format("--port={0}", port.ToString());
+                builder.StartInfo.Arguments = String.Format("--port={0}", _port);
             }
-            server = builder;
+            _server = builder;
             try
             {
-                server.Start();
+                _server.Start();
                 int count = 0;
                 while (!IsListening)
                 {
@@ -70,11 +61,11 @@ namespace AutomatedTester.BrowserMob
         /// </summary>
         public void Stop()
         {
-            if (!server.HasExited)
+            if (!_server.HasExited)
             {
-                server.Kill();
+                _server.Kill();
             }
-            server.Dispose();
+            _server.Dispose();
         }
 
         /// <summary>
@@ -90,7 +81,7 @@ namespace AutomatedTester.BrowserMob
         /// </summary>
         public String Url
         {
-            get { return String.Format("http://localhost:{0}", port.ToString(CultureInfo.InvariantCulture)); }
+            get { return String.Format("http://localhost:{0}", _port.ToString(CultureInfo.InvariantCulture)); }
         }
 
         /// <summary>
@@ -102,7 +93,7 @@ namespace AutomatedTester.BrowserMob
                 try
                 {
                     Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    socket.Connect(IPAddress.Parse("127.0.0.1"), port);
+                    socket.Connect(IPAddress.Parse("127.0.0.1"), _port);
                     socket.Close();
                     return true;
                 }
