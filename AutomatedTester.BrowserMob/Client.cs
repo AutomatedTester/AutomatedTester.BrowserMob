@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -13,19 +14,16 @@ namespace AutomatedTester.BrowserMob
         private readonly string _url;
         private readonly Int16 _port;
         private readonly string _proxy;
+        private readonly string _baseUrlProxy;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="url"></param>
         public Client(string url)
         {
-            if (String.IsNullOrWhiteSpace(url))
+            if (String.IsNullOrEmpty(url))
                 throw new ArgumentException("url not supplied", "url");
 
             _url = url;
-
-            using (var response = MakeRequest(String.Format("{0}/proxy", url), "POST"))
+            _baseUrlProxy = String.Format("{0}/proxy", _url);
+            using (var response = MakeRequest(_baseUrlProxy, "POST"))
             {
                 var responseStream = response.GetResponseStream();
                 if (responseStream == null)
@@ -46,14 +44,10 @@ namespace AutomatedTester.BrowserMob
             var parts = url.Split(':');
             _proxy = parts[1].TrimStart('/') + ":" + _port;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="reference"></param>
+        
         public void NewHar(string reference = null)
         {
-            MakeRequest(String.Format("{0}/proxy/{1}/har", _url, _port), "PUT", reference);
+            MakeRequest(String.Format("{0}/{1}/har", _baseUrlProxy, _port), "PUT", reference);
         }
 
         private static WebResponse MakeRequest(string url, string method, string reference = null)
@@ -68,44 +62,36 @@ namespace AutomatedTester.BrowserMob
                     requestStream.Write(requestBytes, 0, requestBytes.Length);
                     requestStream.Close();
                 }
+                
+                request.ContentType = "application/x-www-form-urlencoded";
             }
             else            
                 request.ContentLength = 0;
-
+            
             return request.GetResponse();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="reference"></param>
         public void NewPage(string reference)
-        {        
-            MakeRequest(String.Format("{0}/proxy/{1}/har/pageRef", _url, _port), "PUT", reference);            
+        {
+            MakeRequest(String.Format("{0}/{1}/har/pageRef", _baseUrlProxy, _port), "PUT", reference);            
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Har
+        public string GetHar()
         {
-            get
+            var response = MakeRequest(String.Format("{0}/{1}/har", _baseUrlProxy, _port), "GET");
+            using (var responseStream = response.GetResponseStream())
             {
-                var response = MakeRequest(String.Format("{0}/proxy/{1}/har", _url, _port), "GET");
-                using (var responseStream = response.GetResponseStream())
-                {
-                    if (responseStream == null)
-                        return null;
+                if (responseStream == null)
+                    return null;
 
-                    using (var responseStreamReader = new StreamReader(responseStream))
-                    {
-                        return responseStreamReader.ReadToEnd();
-                    }
+                using (var responseStreamReader = new StreamReader(responseStream))
+                {
+                    return responseStreamReader.ReadToEnd();
                 }
             }
         }
 
-        public void Limits(Dictionary<String, int> options)
+        public void Limits(Dictionary<string, int> options)
         {
 
         }
@@ -113,23 +99,31 @@ namespace AutomatedTester.BrowserMob
         public string SeleniumProxy
         {
             get { return _proxy; }
+        }       
+
+        public void WhiteList(string regexp, int statusCode)
+        {
+            string data = FormatBlackOrWhiteListFormData(regexp, statusCode);
+            MakeRequest(String.Format("{0}/{1}/whitelist", _baseUrlProxy, _port), "PUT", data);                                    
         }
 
-        public void WhiteList(String regexp, int statusCode)
+        public void Blacklist(string regexp, int statusCode)
         {
-
-        }
-        public void Blacklist(String regexp, int statusCode)
-        {
-
+            string data = FormatBlackOrWhiteListFormData(regexp, statusCode);
+            MakeRequest(String.Format("{0}/{1}/blacklist", _baseUrlProxy, _port), "PUT", data); 
         }        
+
+        private static string FormatBlackOrWhiteListFormData(string regexp, int statusCode)
+        {
+            return String.Format("regex={0}&status={1}", HttpUtility.UrlEncode(regexp), statusCode);
+        }
 
         /// <summary>
         /// shuts down the proxy and closes the port
         /// </summary>
         public void Close()
         {
-            MakeRequest(String.Format("{0}/proxy/{1}", _url, _port), "DELETE");
+            MakeRequest(String.Format("{0}/{1}", _baseUrlProxy, _port), "DELETE");
         }
 
     }

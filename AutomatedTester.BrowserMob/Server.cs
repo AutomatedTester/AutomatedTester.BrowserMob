@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -9,38 +8,36 @@ namespace AutomatedTester.BrowserMob
 {
     public class Server
     {
-        private Process _server;
+        private Process _serverProcess;
         private readonly int _port;
         private readonly String _path = string.Empty;
-      
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="port"></param>
-        public Server(String path, int port = 8080)
+        private const string Host = "localhost";
+
+        public Server(string path) : this(path, 8080)
+        {}
+
+        public Server(string path, int port)
         {
             _path = path;
             _port = port;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public void Start()
         {
-            Process builder = new Process();
-            builder.StartInfo.FileName = _path;
+            _serverProcess = new Process
+                                 {
+                                     StartInfo = {FileName = _path}
+                                 };
             if (_port != 0)
             {
-                builder.StartInfo.Arguments = String.Format("--port={0}", _port);
+                _serverProcess.StartInfo.Arguments = String.Format("--port={0}", _port);
             }
-            _server = builder;
+            
             try
             {
-                _server.Start();
+                _serverProcess.Start();
                 int count = 0;
-                while (!IsListening)
+                while (!IsListening())
                 {
                     Thread.Sleep(1000);
                     count++;
@@ -50,22 +47,25 @@ namespace AutomatedTester.BrowserMob
                     }
                 }
             }
-            finally
+            catch
             {
-                builder.Dispose();
-            }
+                _serverProcess.Dispose();
+                _serverProcess = null;
+                throw;
+            }            
         }
 
         /// <summary>
         /// 
         /// </summary>
         public void Stop()
-        {
-            if (!_server.HasExited)
+        {            
+            if (_serverProcess != null && !_serverProcess.HasExited)
             {
-                _server.Kill();
-            }
-            _server.Dispose();
+                _serverProcess.CloseMainWindow();
+                _serverProcess.Dispose();
+                _serverProcess = null;
+            }            
         }
 
         /// <summary>
@@ -79,29 +79,27 @@ namespace AutomatedTester.BrowserMob
         /// <summary>
         /// 
         /// </summary>
-        public String Url
+        public string Url
         {
-            get { return String.Format("http://localhost:{0}", _port.ToString(CultureInfo.InvariantCulture)); }
+            get { return String.Format("http://{0}:{1}", Host, _port.ToString(CultureInfo.InvariantCulture)); }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        private bool IsListening
+        private bool IsListening()
         {
-            get {
-                try
-                {
-                    Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    socket.Connect(IPAddress.Parse("127.0.0.1"), _port);
-                    socket.Close();
-                    return true;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
+            try
+            {
+                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Connect(Host, _port);
+                socket.Close();
+                return true;
             }
+            catch (Exception)
+            {
+                return false;
+            }            
         }
     }
 }
