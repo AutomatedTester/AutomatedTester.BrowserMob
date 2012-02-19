@@ -45,6 +45,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="HAR\Browser.cs" />
+    <Compile Include="HAR\Cache.cs" />
+    <Compile Include="HAR\CacheEntry.cs" />
+    <Compile Include="HAR\Content.cs" />
+    <Compile Include="HAR\Cookie.cs" />
+    <Compile Include="HAR\Creator.cs" />
+    <Compile Include="HAR\Entry.cs" />
+    <Compile Include="HAR\HarResult.cs" />
+    <Compile Include="HAR\Header.cs" />
+    <Compile Include="HAR\Log.cs" />
+    <Compile Include="HAR\Page.cs" />
+    <Compile Include="HAR\PageTimings.cs" />
+    <Compile Include="HAR\Param.cs" />
+    <Compile Include="HAR\PostData.cs" />
+    <Compile Include="HAR\QueryStringItem.cs" />
+    <Compile Include="HAR\Request.cs" />
+    <Compile Include="HAR\Response.cs" />
+    <Compile Include="HAR\Timings.cs" />
+    <Compile Include="LimitOptions.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

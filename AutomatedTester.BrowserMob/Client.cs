@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Web;
+using AutomatedTester.BrowserMob.HAR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -76,7 +76,7 @@ namespace AutomatedTester.BrowserMob
             MakeRequest(String.Format("{0}/{1}/har/pageRef", _baseUrlProxy, _port), "PUT", reference);            
         }
 
-        public string GetHar()
+        public HarResult GetHar()
         {
             var response = MakeRequest(String.Format("{0}/{1}/har", _baseUrlProxy, _port), "GET");
             using (var responseStream = response.GetResponseStream())
@@ -86,14 +86,18 @@ namespace AutomatedTester.BrowserMob
 
                 using (var responseStreamReader = new StreamReader(responseStream))
                 {
-                    return responseStreamReader.ReadToEnd();
+                    var json = responseStreamReader.ReadToEnd();
+                    return JsonConvert.DeserializeObject<HarResult>(json);
                 }
             }
         }
-
-        public void Limits(Dictionary<string, int> options)
+       
+        public void SetLimits(LimitOptions options)
         {
+            if (options == null)
+                throw new ArgumentNullException("options", "LimitOptions must be supplied");
 
+            MakeRequest(String.Format("{0}/{1}/limit", _baseUrlProxy, _port), "PUT", options.ToFormData());
         }
 
         public string SeleniumProxy
