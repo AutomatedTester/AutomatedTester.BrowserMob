@@ -71,6 +71,28 @@ namespace AutomatedTester.BrowserMob
             return request.GetResponse();
         }
 
+        private static WebResponse MakeJsonRequest(string url, string method, string payload)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = method;
+            
+            if (payload != null)
+            {
+                request.ContentType = "text/json";
+                request.ContentLength = payload.Length;
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    streamWriter.Write(payload);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+            }
+            else
+                request.ContentLength = 0;
+
+            return request.GetResponse();           
+        }
+
         public void NewPage(string reference)
         {
             MakeRequest(String.Format("{0}/{1}/har/pageRef", _baseUrlProxy, _port), "PUT", reference);            
@@ -117,6 +139,11 @@ namespace AutomatedTester.BrowserMob
             MakeRequest(String.Format("{0}/{1}/blacklist", _baseUrlProxy, _port), "PUT", data); 
         }        
 
+        public void RemapHost(string host, string ipAddress)
+        {
+            MakeJsonRequest(String.Format("{0}/{1}/hosts", _baseUrlProxy, _port), "POST", "{\"" + host + "\":\"" + ipAddress + "\"}");            
+        }
+
         private static string FormatBlackOrWhiteListFormData(string regexp, int statusCode)
         {
             return String.Format("regex={0}&status={1}", HttpUtility.UrlEncode(regexp), statusCode);
@@ -132,3 +159,18 @@ namespace AutomatedTester.BrowserMob
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
