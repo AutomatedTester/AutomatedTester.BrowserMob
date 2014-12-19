@@ -1,2 +1,5 @@
 _ReSharper*
 *.suo
+packages
+bin
+obj

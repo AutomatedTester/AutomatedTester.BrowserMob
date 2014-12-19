@@ -1,7 +1,0 @@
-C:\git\AutomatedTester.BrowserMob\AutomatedTester.BrowserMob\obj\Debug\AutomatedTester.BrowserMob.csprojResolveAssemblyReference.cache
-C:\git\AutomatedTester.BrowserMob\AutomatedTester.BrowserMob\bin\Debug\AutomatedTester.BrowserMob.dll
-C:\git\AutomatedTester.BrowserMob\AutomatedTester.BrowserMob\bin\Debug\AutomatedTester.BrowserMob.pdb
-C:\git\AutomatedTester.BrowserMob\AutomatedTester.BrowserMob\bin\Debug\Newtonsoft.Json.dll
-C:\git\AutomatedTester.BrowserMob\AutomatedTester.BrowserMob\bin\Debug\Newtonsoft.Json.xml
-C:\git\AutomatedTester.BrowserMob\AutomatedTester.BrowserMob\obj\Debug\AutomatedTester.BrowserMob.dll
-C:\git\AutomatedTester.BrowserMob\AutomatedTester.BrowserMob\obj\Debug\AutomatedTester.BrowserMob.pdb
