@@ -12,7 +12,7 @@ namespace AutomatedTester.BrowserMob
     public class Client
     {
         private readonly string _url;
-        private readonly Int16 _port;
+        private readonly Int32 _port;
         private readonly string _proxy;
         private readonly string _baseUrlProxy;
 
@@ -37,7 +37,7 @@ namespace AutomatedTester.BrowserMob
                     if (portToken == null) 
                         throw new Exception("No port number returned from proxy");
 
-                    _port = (Int16) portToken;
+                    _port = (Int32) portToken;
                 }            
             }
 
