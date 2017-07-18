@@ -1,3 +1,1 @@
-# .NET Library for working with BrowserMob Proxy
-
-This project is a simple way to work with browsermob proxy and Selenium.
+# .NET Library for working with BrowserMob ProxyThis project is a simple way to work with browsermob proxy and Selenium.Changes-------1.  In Client.cs, _port changed to Int32. The original Int16 was compiling as a signed 16 bit value; port numbers greater than 32767 were being taken as a negative value. 
