@@ -44,10 +44,15 @@ namespace AutomatedTester.BrowserMob
             var parts = url.Split(':');
             _proxy = parts[1].TrimStart('/') + ":" + _port;
         }
-        
-        public void NewHar(string reference = null)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reference"></param>
+        /// <param name="captureContent">Whether to capture body content of requests or not</param>
+        public void NewHar(string reference = null, bool captureContent = false)
         {
-            MakeRequest(String.Format("{0}/{1}/har", _baseUrlProxy, _port), "PUT", reference);
+            MakeRequest(String.Format("{0}/{1}/har" + (captureContent ? "?captureContent=true" : ""), _baseUrlProxy, _port), "PUT", reference);
         }
 
         private static WebResponse MakeRequest(string url, string method, string reference = null)
