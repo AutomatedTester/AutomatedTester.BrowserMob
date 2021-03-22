@@ -12,6 +12,7 @@ namespace AutomatedTester.BrowserMob
         private readonly int _port;
         private readonly String _path = string.Empty;
         private const string Host = "localhost";
+        private string _errorMessage = "";
 
         public Server(string path) : this(path, 8080)
         {}
@@ -43,7 +44,7 @@ namespace AutomatedTester.BrowserMob
                     count++;
                     if (count == 30)
                     {
-                        throw new Exception("Can not connect to BrowserMob Proxy");
+                        throw new Exception($"Can not connect to BrowserMob Proxy - {_errorMessage}");
                     }
                 }
             }
@@ -96,8 +97,9 @@ namespace AutomatedTester.BrowserMob
                 socket.Close();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _errorMessage = ex.Message;
                 return false;
             }            
         }
